@@ -8,24 +8,26 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import okhttp3.*
 import ru.unit6.course.android.retrofit.R
-import ru.unit6.course.android.retrofit.data.model.User
 import ru.unit6.course.android.retrofit.utils.Status
 
-class MainFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = MainFragment()
-    }
+class MainFragment : Fragment(R.layout.main_fragment), MainAdapter.UserClickListener {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var adapter: MainAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
+
+    override fun onUserClick(userId: String) {
+        val action = MainFragmentDirections.toUserDetail(userId)
+        findNavController().navigate(action)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,12 +42,13 @@ class MainFragment : Fragment() {
         }
 
         return view
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
+
 
         setupUI()
         setupObservers()
